@@ -1,0 +1,23 @@
+# CMake build
+/build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# vcpkg build
+/vcpkg_installed/
+
+# output files
+*.o
+*.obj
+*.exe
+*.out
+*.log
+
+# editor files
+*.swp
+*.swo
+*.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,15 @@
+{
+  "dependencies": [
+    "catch2",
+    "concurrentqueue",
+    "magic-enum",
+    "sfml",
+    "fmt"
+  ],
+  "overrides": [
+    { 
+        "name": "fmt", 
+        "version": "10.2.1"
+    }
+  ]
+}
