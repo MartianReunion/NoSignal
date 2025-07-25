@@ -32,6 +32,9 @@ inline void showMessage(const Log::logMessage &message)
     case Log::Level::INFO:
         fmt::print(fmt::fg(fmt::color::white), "{}\n", msg);
         break;
+    case Log::Level::SUCCESS:
+        fmt::print(fmt::fg(fmt::color::lime_green), "{}\n", msg);
+        break;
     case Log::Level::WARNING:
         fmt::print(fmt::fg(fmt::color::yellow), "{}\n", msg);
         break;
@@ -88,5 +91,6 @@ void Log::LogManager::logMain()
             continue;
         }
         showMessage(message);
+        saveMessage(message);
     }
 }

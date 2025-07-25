@@ -6,6 +6,7 @@ int main()
     Log::Logger logger("main");
     logger.debug("This is a debug message");
     logger.info("This is an info message");
+    logger.success("This is a success message");
     logger.warning("This is a warning message");
     logger.error("This is an error message");
     logger.fatal("This is a fatal message");

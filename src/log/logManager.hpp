@@ -8,6 +8,7 @@ namespace Log
     {
         DEBUG = 0,
         INFO,
+        SUCCESS,
         WARNING,
         ERROR,
         FATAL
