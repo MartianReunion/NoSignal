@@ -10,21 +10,24 @@
 #include <sstream>
 #include <fstream>
 #include <filesystem>
+#include <chrono>
 moodycamel::ConcurrentQueue<Log::logMessage> messageQueue;
 std::thread logThread;
 bool running;
-inline void showMessage(const Log::logMessage &message)
+std::fstream logFile;
+inline std::string getTimeString(std::time_t &timestamp)
 {
     std::tm local_time;
-    local_time = *std::localtime(&message.timestamp);
+    local_time = *std::localtime(&timestamp);
 
     // std::string time_str = fmt::format("{:%Y-%m-%d %H:%M:%S}", local_time); // 极为愚蠢，不知道为什么报错 call to consteval function 'fmt::basic_format_string<char, tm &>::basic_format_string<char[21], 0>' is not a constant expression
     std::ostringstream time_stream;
-    time_stream << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
-    std::string time_str = time_stream.str();
-    std::string level_str = std::string(magic_enum::enum_name(message.level));
-    std::string msg = fmt::format("[{}] [{}] {}: {}", time_str, level_str, message.origin, message.message);
-    switch (message.level)
+    time_stream << std::put_time(&local_time, "%Y-%m-%d %H.%M.%S");
+    return time_stream.str();
+}
+inline void showMessage(const std::string &msg, const Log::Level level)
+{
+    switch (level)
     {
     case Log::Level::DEBUG:
         fmt::print(fmt::fg(fmt::color::gray), "{}\n", msg);
@@ -49,8 +52,9 @@ inline void showMessage(const Log::logMessage &message)
         break;
     }
 }
-inline void saveMessage(const Log::logMessage &message)
+inline void saveMessage(const std::string &msg, const Log::Level level)
 {
+    logFile << msg << std::endl;
 }
 
 bool Log::LogManager::isRunning()
@@ -83,6 +87,22 @@ void Log::LogManager::log(const logMessage message)
 void Log::LogManager::logMain()
 {
     logMessage message;
+    if (!std::filesystem::exists("logs"))
+    {
+        std::filesystem::create_directory("logs");
+    }
+    auto now = std::time(nullptr);
+    std::string ts = getTimeString(now);
+    std::string fileName = "./logs/" + ts + ".log";
+    logFile.open(fileName, std::ios::out | std::ios::app);
+    if (!logFile)
+    {
+        messageQueue.enqueue({"LogManager",
+                              "Failed to open log file",
+                              Level::FATAL,
+                              std::time(nullptr)});
+        return;
+    }
     while (running)
     {
         if (!messageQueue.try_dequeue(message))
@@ -90,7 +110,11 @@ void Log::LogManager::logMain()
             std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Sleep to avoid busy waiting
             continue;
         }
-        showMessage(message);
-        saveMessage(message);
+        std::string level_str = std::string(magic_enum::enum_name(message.level));
+        std::string time_str = getTimeString(message.timestamp);
+        std::string msg = fmt::format("[{}] [{}] {}: {}", time_str, level_str, message.origin, message.message);
+        showMessage(msg, message.level);
+        saveMessage(msg, message.level);
     }
+    logFile.close();
 }
