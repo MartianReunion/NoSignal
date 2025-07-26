@@ -26,10 +26,6 @@ class i18n
 const std::string I18NPATH = "i18n:/";
 const std::string FILESUFFIX = ".json";
 
-i18n EN_US = i18n("en_us");
-i18n ZH_CN = i18n("zh_cn");
-i18n ZH_JBP = i18n("zh_jbp");
-
 // 负责数据生成（语言文件）
 class TranslationDataGen
 {

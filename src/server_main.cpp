@@ -22,6 +22,6 @@ int main()
     }
     std::cout << std::endl;
 
-    
+    std::cout << i18n("en_us").of("hello") << std::endl;
     return 0; 
 }
