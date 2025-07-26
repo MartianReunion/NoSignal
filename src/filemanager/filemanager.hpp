@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <fstream>
 const std::string GAMEDIRROOT = "./";
-const int BINARY = std::ios::in || std::ios::out || std::ios::binary;
-const int NORMAL = std::ios::in || std::ios::out;
+const int BINARY = std::ios::in | std::ios::out | std::ios::binary;
+const std::ios::openmode NORMAL = std::ios::in | std::ios::out;
 std::string to_upper(std::string x);
 std::string to_lower(std::string x);
 class FileManager
