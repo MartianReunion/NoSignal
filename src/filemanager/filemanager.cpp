@@ -34,7 +34,7 @@ bool FileManager::isconverted(std::string path)
     return path.find(':') == path.npos;
 }
 
-bool FileManager::getfile(std::string path, std::fstream &s, int way)
+bool FileManager::getfile(std::string path, std::fstream &s, std::ios::openmode way)
 {
     std::string cpath = isconverted(path) ? path : convertpath(path);
     if(!existfile(cpath))

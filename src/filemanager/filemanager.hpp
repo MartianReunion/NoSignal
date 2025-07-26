@@ -11,7 +11,7 @@ std::string to_lower(std::string x);
 class FileManager
 {
     public:
-    bool getfile(std::string path, std::fstream &s, int way);
+    bool getfile(std::string path, std::fstream &s, std::ios::openmode way);
     bool existfile(std::string path);
     bool existdir(std::string path);
     // void MakeGameDir();
