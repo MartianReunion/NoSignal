@@ -81,7 +81,8 @@ void Log::LogManager::stop()
 
 void Log::LogManager::log(const logMessage message)
 {
-    messageQueue.enqueue(message);
+    if (running)
+        messageQueue.enqueue(message);
 }
 
 void Log::LogManager::logMain()
