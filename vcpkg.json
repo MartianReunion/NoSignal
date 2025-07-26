@@ -2,14 +2,15 @@
   "dependencies": [
     "catch2",
     "concurrentqueue",
+    "fmt",
     "magic-enum",
     "sfml",
-    "fmt"
+    "nlohmann-json"
   ],
   "overrides": [
-    { 
-        "name": "fmt", 
-        "version": "10.2.1"
+    {
+      "name": "fmt",
+      "version": "10.2.1"
     }
   ]
 }
