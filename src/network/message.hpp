@@ -3,19 +3,29 @@
 #include <type_traits>
 #include <variant>
 #include <cstddef>
+#include <memory>
+#include <cinttypes>
 namespace Network
 {
+    template<typename T> struct MessageTypeId;
+    template<> struct MessageTypeId<Message::Unknown> { static constexpr u_int16_t value = 0; };
+    template<> struct MessageTypeId<Message::Ping> { static constexpr u_int16_t value = 1; };
+    template<> struct MessageTypeId<Message::Pong> { static constexpr u_int16_t value = 2; };
     class Message
     {
     public:
         struct Unknown
         {
-            char *data = nullptr;
+            std::unique_ptr<std::byte[]> data;
             size_t size = 0;
         };
         struct Ping
         {
         };
+        struct Pong
+        {
+        };
+
         template <typename TMessageSubtype>
         Message(const TMessageSubtype &eventSubtype);
         template <typename TMessageSubtype>
@@ -25,7 +35,8 @@ namespace Network
 
     private:
         std::variant<Unknown,
-                     Ping>
+                     Ping,
+                     Pong>
             m_data;
         template <typename T, typename... Ts>
         [[nodiscard]] static constexpr bool isInParameterPack(const std::variant<Ts...> *)
