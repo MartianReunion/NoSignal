@@ -8,5 +8,6 @@ int main()
     std::string hhh;
     fst >> hhh;
     std::cout << hhh << std::endl;
+    fst.close();
     return 0; 
 }
