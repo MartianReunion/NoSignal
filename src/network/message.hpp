@@ -2,6 +2,7 @@
 #pragma once
 #include <type_traits>
 #include <variant>
+#include <cstddef>
 namespace Network
 {
     class Message
@@ -23,8 +24,8 @@ namespace Network
         [[nodiscard]] const TMessageSubtype *getIf() const;
 
     private:
-        std::variant<Ping,
-                     Unknown>
+        std::variant<Unknown,
+                     Ping>
             m_data;
         template <typename T, typename... Ts>
         [[nodiscard]] static constexpr bool isInParameterPack(const std::variant<Ts...> *)
