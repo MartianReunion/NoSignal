@@ -13,6 +13,7 @@ find_package(SFML COMPONENTS Network Graphics Window Audio System CONFIG REQUIRE
 find_package(Catch2 CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(magic_enum CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 enable_testing()
 # 添加 src 目录到 include path
@@ -37,11 +38,13 @@ add_executable(NoSignal ${NoSignal_CLIENT_SOURCES})
 target_link_libraries(NoSignal PRIVATE SFML::Network SFML::Graphics SFML::Window SFML::Audio SFML::System)
 target_link_libraries(NoSignal PRIVATE fmt::fmt)
 target_link_libraries(NoSignal PRIVATE magic_enum::magic_enum)
+target_link_libraries(NoSignal PRIVATE nlohmann_json::nlohmann_json)
 
 # 服务端可执行文件
 add_executable(NoSignalServer ${NoSignal_SERVER_SOURCES})
 target_link_libraries(NoSignalServer PRIVATE fmt::fmt)
-target_link_libraries(NoSignal PRIVATE magic_enum::magic_enum)
+target_link_libraries(NoSignalServer PRIVATE magic_enum::magic_enum)
+target_link_libraries(NoSignalServer PRIVATE nlohmann_json::nlohmann_json)
 
 file(GLOB_RECURSE NoSignal_TESTS
     test/*.cpp
