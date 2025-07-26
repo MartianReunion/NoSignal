@@ -49,6 +49,12 @@ file(GLOB_RECURSE NoSignal_TESTS
     test/*.cxx
     test/*.cc
 )
-#add_executable(tests ${NoSignal_TESTS} ${NoSignal_SOURCES})
-#target_link_libraries(tests PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
-#add_test(NAME tests COMMAND tests)
+set(NoSignal_TEST_SOURCES ${NoSignal_SOURCES})
+list(REMOVE_ITEM NoSignal_TEST_SOURCES "${CMAKE_SOURCE_DIR}/src/client_main.cpp")
+list(REMOVE_ITEM NoSignal_TEST_SOURCES "${CMAKE_SOURCE_DIR}/src/server_main.cpp")
+add_executable(tests ${NoSignal_TESTS} ${NoSignal_TEST_SOURCES})
+target_link_libraries(tests PRIVATE Catch2::Catch2 Catch2::Catch2WithMain)
+target_link_libraries(tests PRIVATE SFML::Network SFML::Graphics SFML::Window SFML::Audio SFML::System)
+target_link_libraries(tests PRIVATE fmt::fmt)
+target_link_libraries(tests PRIVATE magic_enum::magic_enum)
+add_test(NAME tests COMMAND tests)
