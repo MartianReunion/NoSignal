@@ -24,5 +24,12 @@ namespace Network
         if constexpr (isEventSubtype<TMessageSubtype>)
             return std::get_if<TMessageSubtype>(&m_data);
     }
-
+    [[nodiscard]] inline std::vector<std::byte> Message::serialize() const
+    {
+        return std::visit([](const auto &msg)
+                          {
+                              return ::Network::serialize(msg);
+                          },
+                          m_data);
+    }
 } // namespace Network
