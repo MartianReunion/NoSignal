@@ -4,13 +4,26 @@
 #include <variant>
 #include <cstddef>
 #include <memory>
-#include <cinttypes>
+#include <cstdint>
 namespace Network
 {
-    template<typename T> struct MessageTypeId;
-    template<> struct MessageTypeId<Message::Unknown> { static constexpr u_int16_t value = 0; };
-    template<> struct MessageTypeId<Message::Ping> { static constexpr u_int16_t value = 1; };
-    template<> struct MessageTypeId<Message::Pong> { static constexpr u_int16_t value = 2; };
+    template <typename T>
+    struct MessageTypeId;
+    template <>
+    struct MessageTypeId<Message::Unknown>
+    {
+        static constexpr uint16_t value = 0;
+    };
+    template <>
+    struct MessageTypeId<Message::Ping>
+    {
+        static constexpr uint16_t value = 1;
+    };
+    template <>
+    struct MessageTypeId<Message::Pong>
+    {
+        static constexpr uint16_t value = 2;
+    };
     class Message
     {
     public:
