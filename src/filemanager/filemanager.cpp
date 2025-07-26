@@ -45,6 +45,21 @@ bool FileManager::getfile(std::string path, std::fstream &s, std::ios::openmode 
     return s.good();
 }
 
+bool FileManager::getfile_auto(std::string path, std::fstream &s, std::ios::openmode way)
+{
+    std::string cpath = isconverted(path) ? path : convertpath(path);
+    if(!fs::exists(cpath))
+    {
+        fs::path dirpath = fs::path(cpath).parent_path();
+        if(!existdir(dirpath.string()))
+        {
+            fs::create_directories(dirpath);
+        }
+    }
+    s.open(cpath, way);
+    return s.good();
+}
+
 std::string to_upper(std::string x)
 {
     std::string y;
