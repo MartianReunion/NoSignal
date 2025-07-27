@@ -4,7 +4,8 @@
 namespace Network
 {
     template <typename TMessageSubtype>
-    Message::Message(const TMessageSubtype &eventSubtype)
+    Message::Message(const TMessageSubtype &eventSubtype, UUID remote)
+        : remote(remote)
     {
         static_assert(isEventSubtype<TMessageSubtype>, "TMessageSubtype must be a subtype of Network::Message");
         if constexpr (isEventSubtype<TMessageSubtype>)
@@ -23,13 +24,5 @@ namespace Network
         static_assert(isEventSubtype<TMessageSubtype>, "TMessageSubtype must be a subtype of Network::Message");
         if constexpr (isEventSubtype<TMessageSubtype>)
             return std::get_if<TMessageSubtype>(&m_data);
-    }
-    [[nodiscard]] inline std::vector<std::byte> Message::serialize() const
-    {
-        return std::visit([](const auto &msg)
-                          {
-                              return ::Network::serialize(msg);
-                          },
-                          m_data);
     }
 } // namespace Network

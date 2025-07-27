@@ -2,7 +2,8 @@
 #include <array>
 #include <cstdint>
 #include <cstddef>
-
+#include <memory>
+#include <algorithm>
 inline std::array<std::byte, 2> uint16_to_be_bytes(uint16_t value)
 {
     std::array<std::byte, 2> bytes{};
@@ -50,4 +51,14 @@ inline uint64_t be_bytes_to_uint64(const std::array<std::byte, 8> &bytes)
                      (static_cast<uint64_t>(bytes[6]) << 8) |
                      static_cast<uint64_t>(bytes[7]);
     return value;
+}
+template<std::size_t L>
+inline std::array<std::byte, L> vectorToArray(typename std::vector<std::byte>::iterator begin) {
+    if (std::distance(begin, begin + L) < static_cast<typename std::iterator_traits<decltype(begin)>::difference_type>(L)) {
+        throw std::out_of_range("Not enough elements in vector");
+    }
+    
+    std::array<std::byte, L> result;
+    std::copy_n(begin, L, result.begin());
+    return result;
 }

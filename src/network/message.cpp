@@ -2,87 +2,145 @@
 #include "network/utiles.hpp"
 #include "log/logger.hpp"
 using namespace Network;
-const auto metadataSize = sizeof(uint16_t) + sizeof(uint64_t);
 
 Log::Logger logger("NetworkMessage");
 
-std::vector<std::byte> Network::serialize(const Message::Unknown &msg)
+// Serializes
+uint64_t Network::serialize(const Message::Broken &msg, std::vector<std::byte>::iterator &out)
 {
-    std::vector<std::byte> buffer(msg.data.size() + metadataSize);
-    auto id = uint16_to_be_bytes(MessageTypeId<Message::Unknown>::value);
-    std::copy(id.begin(), id.end(), buffer.begin());
-    auto size = uint64_to_be_bytes(msg.data.size());
-    std::copy(size.begin(), size.end(), buffer.begin() + sizeof(uint16_t));
-    std::copy(msg.data.begin(), msg.data.end(), buffer.begin() + sizeof(uint16_t) + sizeof(uint64_t));
-    return std::move(buffer);
+    logger.debug("Serializing Broken message");
+    auto size = msg.data.size();
+    out = std::copy(msg.data.begin(), msg.data.end(), out);
+    return size;
 }
-std::vector<std::byte> Network::serialize(const Message::Ping &)
+uint64_t Network::serialize(const Message::Ping &msg, std::vector<std::byte>::iterator &out)
 {
-    std::vector<std::byte> buffer(0 + metadataSize);
-    auto id = uint16_to_be_bytes(MessageTypeId<Message::Ping>::value);
-    std::copy(id.begin(), id.end(), buffer.begin());
-    auto size = uint64_to_be_bytes(0);
-    std::copy(size.begin(), size.end(), buffer.begin() + sizeof(uint16_t));
-    return std::move(buffer);
+    logger.debug("Serializing Ping message");
+    return 0; // Ping has no data
 }
-std::vector<std::byte> Network::serialize(const Message::Pong &)
+uint64_t Network::serialize(const Message::Pong &msg, std::vector<std::byte>::iterator &out)
 {
-    std::vector<std::byte> buffer(0 + metadataSize);
-    auto id = uint16_to_be_bytes(MessageTypeId<Message::Pong>::value);
-    std::copy(id.begin(), id.end(), buffer.begin());
-    auto size = uint64_to_be_bytes(0);
-    std::copy(size.begin(), size.end(), buffer.begin() + sizeof(uint16_t));
-    return std::move(buffer);
+    logger.debug("Serializing Pong message");
+    return 0; // Pong has no data
 }
-std::vector<std::byte> Network::serialize(const Message::Broken &)
+uint64_t Network::serialize(const Message::Unknown &msg, std::vector<std::byte>::iterator &out)
 {
-    logger.warning("Serializing Broken type message.");
-    std::vector<std::byte> buffer(0 + metadataSize);
-    auto id = uint16_to_be_bytes(MessageTypeId<Message::Broken>::value);
-    std::copy(id.begin(), id.end(), buffer.begin());
-    auto size = uint64_to_be_bytes(0);
-    std::copy(size.begin(), size.end(), buffer.begin() + sizeof(uint16_t));
-    return std::move(buffer);
+    logger.debug("Serializing Unknown message");
+    auto size = msg.data.size();
+    out = std::copy(msg.data.begin(), msg.data.end(), out);
+    return size;
 }
 
-Message Network::makeMessage(const std::vector<std::byte> &data)
+// Deserializes
+Message::Broken Network::deserializeBroken(const std::vector<std::byte> &data)
 {
-    if (data.size() < metadataSize)
+    logger.debug("Deserializing Broken message");
+    Message::Broken brokenMessage;
+    brokenMessage.data = data;
+    return brokenMessage;
+}
+Message::Ping Network::deserializePing(const std::vector<std::byte> &data)
+{
+    logger.debug("Deserializing Ping message");
+    if (!data.empty())
     {
-        logger.error("Data size is less than the metadata size, returning broken message");
-        Message::Broken brokenMessage;
-        return Message(brokenMessage);
+        logger.warning("Ping message should not contain data, ignoring it");
     }
-    std::array<std::byte, 2> idBytes;
-    std::copy(data.begin(), data.begin() + sizeof(uint16_t), idBytes.begin());
-
-    std::array<std::byte, 8> sizeBytes;
-    std::copy(data.begin() + sizeof(uint16_t), data.begin() + metadataSize, sizeBytes.begin());
-
-    uint16_t id = be_bytes_to_uint16(idBytes);
-    uint64_t size = be_bytes_to_uint64(sizeBytes);
-
-    if (data.size() != metadataSize + size)
+    return Message::Ping();
+}
+Message::Pong Network::deserializePong(const std::vector<std::byte> &data)
+{
+    logger.debug("Deserializing Pong message");
+    if (!data.empty())
     {
-        logger.error("Message size mismatch, returning broken message");
-        Message::Broken brokenMessage;
-        return Message(brokenMessage);
+        logger.warning("Pong message should not contain data, ignoring it");
     }
+    return Message::Pong();
+}
+Message::Unknown Network::deserializeUnknown(const std::vector<std::byte> &data)
+{
+    logger.debug("Deserializing Unknown message");
+    Message::Unknown unknownMessage;
+    unknownMessage.data = data;
+    return unknownMessage;
+}
 
-    switch (id)
+//
+std::vector<std::byte> Message::serialize(UUID &remote) const
+{
+    return std::visit([&](const auto &msg)
+                      {
+            std::vector<std::byte> packet(METADATA_SIZE+INITIAL_BUFFER_SIZE);
+            auto magic = uint16_to_be_bytes(MAGIC_NUMBER);
+            auto messageId = uint16_to_be_bytes(MessageType<std::decay_t<decltype(msg)>>::id);
+            auto remoteUuid = remote.getData();
+            auto i = packet.begin();
+            i+=METADATA_SIZE;
+            auto payloadSize = uint64_to_be_bytes(::Network::serialize(msg,i));
+            i = packet.begin();
+            std::copy(magic.begin(), magic.end(), i);
+            i += MAGIC_NUMBER_SIZE;
+            std::copy(remoteUuid.begin(), remoteUuid.end(), i);
+            i += REMOTE_UUID_SIZE;
+            std::copy(messageId.begin(), messageId.end(), i);
+            i += MESSAGE_ID_SIZE;
+            std::copy(payloadSize.begin(), payloadSize.end(), i);
+            i += MESSAGE_SIZE_SIZE;
+            return packet; },
+                      m_data);
+}
+//
+Message makeMessage(const std::vector<std::byte> &data)
+{
+    if (data.size() < METADATA_SIZE)
     {
-    case MessageTypeId<Message::Unknown>::value:
-        logger.warning("Unknown message type received, returning as Unknown.");
-        return Message(Message::Unknown{std::vector<std::byte>(data.begin() + metadataSize, data.end())});
-    case MessageTypeId<Message::Ping>::value:
-        return Message(Message::Ping{});
-    case MessageTypeId<Message::Pong>::value:
-        return Message(Message::Pong{});
-    case MessageTypeId<Message::Broken>::value:
-        logger.error("Broken message received, returning as Broken.");
-        return Message(Message::Broken());
+        logger.error("Message is too small");
+        Message::Broken brokenMessage;
+        brokenMessage.data = std::vector<std::byte>(data.begin(), data.end());
+        return Message(brokenMessage, UUID::nil());
+    }
+    std::vector<std::byte> metadata(data.begin(), data.begin() + METADATA_SIZE);
+    std::vector<std::byte> messageData(data.begin() + METADATA_SIZE, data.end());
+    std::array<std::byte, MAGIC_NUMBER_SIZE> magic = vectorToArray<MAGIC_NUMBER_SIZE>(metadata.begin());
+    if (be_bytes_to_uint16(magic) != MAGIC_NUMBER)
+    {
+        logger.error("Invalid magic number in message");
+        Message::Broken brokenMessage;
+        brokenMessage.data = std::vector<std::byte>(data.begin(), data.end());
+        return Message(brokenMessage, UUID::nil());
+    }
+    std::array<std::byte, REMOTE_UUID_SIZE> remoteuuid = vectorToArray<REMOTE_UUID_SIZE>(metadata.begin() + MAGIC_NUMBER_SIZE);
+    UUID remote(remoteuuid);
+    if (remote.isNil())
+    {
+        logger.error("Invalid UUID in message");
+        Message::Broken brokenMessage;
+        brokenMessage.data = std::vector<std::byte>(data.begin(), data.end());
+        return Message(brokenMessage, UUID::nil());
+    }
+    std::array<std::byte, MESSAGE_ID_SIZE> messageIdBytes = vectorToArray<MESSAGE_ID_SIZE>(metadata.begin() + MAGIC_NUMBER_SIZE + REMOTE_UUID_SIZE);
+    uint16_t messageId = be_bytes_to_uint16(messageIdBytes);
+    std::array<std::byte, MESSAGE_SIZE_SIZE> messageSizeBytes = vectorToArray<MESSAGE_SIZE_SIZE>(metadata.begin() + MAGIC_NUMBER_SIZE + REMOTE_UUID_SIZE + MESSAGE_ID_SIZE);
+    uint64_t messageSize = be_bytes_to_uint64(messageSizeBytes);
+    if (messageSize != messageData.size())
+    {
+        logger.error("Message size mismatch: expected " + std::to_string(messageSize) + ", got " + std::to_string(messageData.size()));
+        Message::Broken brokenMessage;
+        brokenMessage.data = std::vector<std::byte>(data.begin(), data.end());
+        return Message(brokenMessage, remote);
+    }
+    switch (messageId)
+    {
+    case MessageType<Message::Broken>::id:
+        return Message(deserializeBroken(messageData), remote);
+    case MessageType<Message::Ping>::id:
+        return Message(deserializePing(messageData), remote);
+    case MessageType<Message::Pong>::id:
+        return Message(deserializePong(messageData), remote);
+    case MessageType<Message::Unknown>::id:
+        return Message(deserializeUnknown(messageData), remote);
     default:
-        logger.error("Unknown message type ID: " + std::to_string(id));
-        return Message(Message::Unknown{std::vector<std::byte>(data.begin() + metadataSize, data.end())});
+        logger.error("Unknown message type: " + std::to_string(messageId));
+        return Message(Message::Unknown{messageData}, remote);
     }
 }
