@@ -45,17 +45,17 @@ bool FileManager::getfile(std::string path, std::fstream &s, std::ios::openmode 
     return s.good();
 }
 
-bool FileManager::getfile_utf8(std::string path, std::wfstream &s, std::ios::openmode way)
-{
-    std::string cpath = isconverted(path) ? path : convertpath(path);
-    if(!existfile(cpath))
-    {
-        return false;
-    }
-    s.open(cpath, way);
-    s.imbue(utf8);
-    return s.good();
-}
+// bool FileManager::getfile_utf8(std::string path, std::wfstream &s, std::ios::openmode way)
+// {
+//     std::string cpath = isconverted(path) ? path : convertpath(path);
+//     if(!existfile(cpath))
+//     {
+//         return false;
+//     }
+//     s.open(cpath, way);
+//     s.imbue(utf8);
+//     return s.good();
+// }
 
 bool FileManager::getfile_auto(std::string path, std::fstream &s, std::ios::openmode way)
 {
@@ -72,21 +72,21 @@ bool FileManager::getfile_auto(std::string path, std::fstream &s, std::ios::open
     return s.good();
 }
 
-bool FileManager::getfile_auto_utf8(std::string path, std::wfstream &s, std::ios::openmode way)
-{
-    std::string cpath = isconverted(path) ? path : convertpath(path);
-    if(!fs::exists(cpath))
-    {
-        fs::path dirpath = fs::path(cpath).parent_path();
-        if(!existdir(dirpath.string()))
-        {
-            fs::create_directories(dirpath);
-        }
-    }
-    s.open(cpath, way);
-    s.imbue(utf8);
-    return s.good();
-}
+// bool FileManager::getfile_auto_utf8(std::string path, std::wfstream &s, std::ios::openmode way)
+// {
+//     std::string cpath = isconverted(path) ? path : convertpath(path);
+//     if(!fs::exists(cpath))
+//     {
+//         fs::path dirpath = fs::path(cpath).parent_path();
+//         if(!existdir(dirpath.string()))
+//         {
+//             fs::create_directories(dirpath);
+//         }
+//     }
+//     s.open(cpath, way);
+//     s.imbue(utf8);
+//     return s.good();
+// }
 
 std::string to_upper(std::string x)
 {
