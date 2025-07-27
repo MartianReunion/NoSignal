@@ -90,7 +90,7 @@ std::vector<std::byte> Message::serialize(UUID &remote) const
                       m_data);
 }
 //
-Message makeMessage(const std::vector<std::byte> &data)
+Message Network::makeMessage(const std::vector<std::byte> &data)
 {
     if (data.size() < METADATA_SIZE)
     {
