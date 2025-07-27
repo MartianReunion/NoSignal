@@ -1,32 +1,39 @@
+// uuid.cpp
 #include "uuid/uuid.hpp"
+#include <algorithm>
 
-// 生成随机UUID（版本4）
+// Generate random UUID (version 4)
 void UUID::generateRandom()
 {
-    // 使用随机设备生成种子
+    // Use random device for seeding
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<unsigned> dis(0, 255);
-    // 生成16个随机字节
+    
+    // Generate 16 random bytes
     for (int i = 0; i < 16; ++i) 
     {
-        data_[i] = static_cast<unsigned char>(dis(gen));
+        data_[i] = static_cast<std::byte>(dis(gen));
     }
-    // 设置版本号（第6字节高4位为0100）
-    data_[6] = (data_[6] & 0x0F) | 0x40;  // 版本4
-    // 设置变体（第8字节高2位为10）
-    data_[7] = (data_[7] & 0x3F) | 0x80;  // RFC 4122变体
+    
+    // Set version (bits 4-7 of byte 6 to 0100)
+    data_[6] = (data_[6] & static_cast<std::byte>(0x0F)) | static_cast<std::byte>(0x40);
+    
+    // Set variant (bits 6-7 of byte 8 to 10)
+    data_[8] = (data_[8] & static_cast<std::byte>(0x3F)) | static_cast<std::byte>(0x80);
 }
 
-// 转换为标准UUID字符串格式（8-4-4-4-12）
-std::string UUID::toString()
+// Convert to standard UUID string format (8-4-4-4-12)
+std::string UUID::toString() const
 {
     std::ostringstream oss;
     oss << std::hex << std::setfill('0');
-    // 按分组输出十六进制值
+    
     for (int i = 0; i < 16; ++i) {
+        // Convert std::byte to unsigned for output
         oss << std::setw(2) << static_cast<unsigned>(data_[i]);
-        // 在指定位置添加连字符
+        
+        // Add hyphens at the correct positions
         if (i == 3 || i == 5 || i == 7 || i == 9) {
             oss << '-';
         }
@@ -34,11 +41,11 @@ std::string UUID::toString()
     return oss.str();
 }
 
-std::string UUID::toString2()
+std::string UUID::toString2() const
 {
     std::ostringstream oss;
     oss << std::hex << std::setfill('0');
-    // 按分组输出十六进制值
+    
     for (int i = 0; i < 16; ++i) {
         oss << std::setw(2) << static_cast<unsigned>(data_[i]);
     }

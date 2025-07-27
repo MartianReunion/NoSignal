@@ -1,31 +1,54 @@
+// uuid.hpp
 #pragma once
 #include <array>
 #include <random>
 #include <sstream>
 #include <iomanip>
 #include <string>
+#include <cstddef>  // for std::byte
+
 class UUID {
 public:
-    // 默认构造函数生成随机UUID
+    // Default constructor generates random UUID
     UUID() {
         generateRandom();
     }
 
-    // 从16字节数据构造UUID
-    explicit UUID(const std::array<unsigned char, 16>& data) : data_(data) {}
+    // Construct UUID from 16 bytes of data
+    explicit UUID(const std::array<std::byte, 16>& data) : data_(data) {}
 
-    // 生成随机UUID（版本4）
+    // Generate nil UUID (all zeros)
+    static UUID nil() {
+        return UUID(std::array<std::byte, 16>{});
+    }
+
+    // Generate random UUID (version 4)
     void generateRandom();
 
-    // 转换为标准UUID字符串格式（8-4-4-4-12）
-    std::string toString();
+    // Convert to standard UUID string format (8-4-4-4-12)
+    std::string toString() const;
 
-    // 转换为标准UUID字符串格式（没有连字符）
-    std::string toString2();
+    // Convert to UUID string format without hyphens
+    std::string toString2() const;
 
-    // 获取原始数据
-    const std::array<unsigned char, 16>& getData() const { return data_; }
+    // Get raw data
+    const std::array<std::byte, 16>& getData() const { return data_; }
+
+    // Equality comparison
+    bool operator==(const UUID& other) const {
+        return data_ == other.data_;
+    }
+
+    // Inequality comparison
+    bool operator!=(const UUID& other) const {
+        return !(*this == other);
+    }
+
+    // Check if this is the nil UUID
+    bool isNil() const {
+        return *this == nil();
+    }
 
 private:
-    std::array<unsigned char, 16> data_{};
+    std::array<std::byte, 16> data_{};
 };
