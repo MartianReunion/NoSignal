@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <algorithm>
 #include <fstream>
+#include <vector>
 const std::string GAMEDIRROOT = "./";
 const std::ios::openmode BINARY = std::ios::in | std::ios::out | std::ios::binary;
 const std::ios::openmode NORMAL = std::ios::in | std::ios::out;
