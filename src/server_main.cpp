@@ -23,9 +23,10 @@ int main()
     }
     std::cout << std::endl;
 
-    std::cout << i18n("en_us").of("hello") << std::endl;
+    std::cout << i18n("en_us").of("nosignal.hello") << std::endl;
+    // std::cout << i18n("zh_cn").of("nosignal.hello") << std::endl;
 
-    CppDoc().gendoc_all_auto("cpp:/cppdoc");
+    CppDoc().gendoc_all("cpp:/cppdoc",i18n("fr_fr"));
 
     return 0; 
 }
