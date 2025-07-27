@@ -61,3 +61,7 @@ target_link_libraries(tests PRIVATE SFML::Network SFML::Graphics SFML::Window SF
 target_link_libraries(tests PRIVATE fmt::fmt)
 target_link_libraries(tests PRIVATE magic_enum::magic_enum)
 add_test(NAME tests COMMAND tests)
+
+if(MSVC)
+    add_compile_options("/source-charset:utf-8")
+endif()

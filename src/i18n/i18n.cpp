@@ -44,6 +44,19 @@ void i18n::save()
     }
 }
 
+void i18n::saveutf8()
+{
+    FileManager fm = FileManager();
+    std::wfstream f;
+    if(fm.getfile_auto_utf8(I18NPATH + language + FILESUFFIX, f, NORMALTRUNC))
+    {
+        json j(tr);
+        std::wstring dp = String2Wstring(j.dump());
+        f << dp;
+        f.close();
+    }
+}
+
 void TranslationDataGen::gen()
 {
     i18n EN_US("en_us");
@@ -73,15 +86,15 @@ void TranslationDataGen::gen()
     DE_DE.add("nosignal.cppdoc.class", "# Klasse ");
     DE_DE.save();
 
-    // 还没找到支持中文的方法，只能先支持一下法语和德语，但是是机翻
+    // 还是不行
     // i18n ZH_CN("zh_cn");
-    // ZH_CN.add("nosignal.hello",gbktoutf8("你好"));
-    // ZH_CN.add("nosignal.cppdoc.func", gbktoutf8("## 方法 "));
-    // ZH_CN.add("nosignal.cppdoc.desc", gbktoutf8("**描述:** "));
-    // ZH_CN.add("nosignal.cppdoc.para", gbktoutf8("**参数** "));
-    // ZH_CN.add("nosignal.cppdoc.colon", gbktoutf8(" : "));
-    // ZH_CN.add("nosignal.cppdoc.class", gbktoutf8("# 类 "));
-    // ZH_CN.save();
+    // ZH_CN.add("nosignal.hello","你好");
+    // ZH_CN.add("nosignal.cppdoc.func", "## 方法 ");
+    // ZH_CN.add("nosignal.cppdoc.desc", "**描述:** ");
+    // ZH_CN.add("nosignal.cppdoc.para", "**参数** ");
+    // ZH_CN.add("nosignal.cppdoc.colon", " : ");
+    // ZH_CN.add("nosignal.cppdoc.class", "# 类 ");
+    // ZH_CN.saveutf8();
 
     // 整活语言：村民语-MC
     i18n VL_MC("vl_mc");
