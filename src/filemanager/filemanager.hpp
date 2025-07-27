@@ -20,5 +20,6 @@ class FileManager
     // void MakeGameDir();
     bool isconverted(std::string path);
     std::string convertpath(std::string x);
+    void getallfile(std::string path,std::vector<std::string> &x);
 };
 // FileManager FILEMANAGER = FileManager();

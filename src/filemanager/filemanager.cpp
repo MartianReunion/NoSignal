@@ -79,3 +79,20 @@ std::string to_lower(std::string x)
     }
     return y;
 }
+
+void FileManager::getallfile(std::string path,std::vector<std::string> &x)
+{
+    std::string cpath = isconverted(path) ? path : convertpath(path);
+    for(auto& i : fs::directory_iterator(cpath))
+    {
+        fs::path pt = i.path();
+        if(fs::is_directory(i))
+        {
+            getallfile(pt.string(),x);
+        }
+        else
+        {
+            x.push_back(pt.string());
+        }
+    }
+}

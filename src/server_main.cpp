@@ -25,7 +25,7 @@ int main()
 
     std::cout << i18n("en_us").of("hello") << std::endl;
 
-    CppDoc().gendoc_auto("cpp:/test.cpp");
+    CppDoc().gendoc_all_auto("cpp:/cppdoc");
 
     return 0; 
 }

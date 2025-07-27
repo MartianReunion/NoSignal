@@ -15,6 +15,16 @@ bool CppDoc::isgood(char ch)
     return (ch>='A'&&ch<='Z')||(ch>='a'&&ch<='z')||(ch>='0'&&ch<='9')||(ch=='_');
 }
 
+bool CppDoc::skipon(std::string x)
+{
+    return x=="//*";
+}
+
+bool CppDoc::skipoff(std::string x)
+{
+    return x=="//**";
+}
+
 std::string CppDoc::substring(std::string x,int l,int r)
 {
     std::string em;
@@ -90,19 +100,26 @@ std::vector<std::string> CppDoc::getnames(std::string x)
     {
         return rt;
     }
-    for(int i=bk+1;i<=cbk;i++)
+    bool flag=false;
+    for(int i=bk;i<=cbk;i++)
     {
-        if(isgood(x[i]))
+        if(x[i]==' ')
         {
-            af.push_back(x[i]);
+            flag=true;
+            continue;
         }
-        else
+        if(x[i]==','||x[i]==')')
         {
             if(!af.empty())
             {
                 rt.push_back(af);
                 af.clear();
+                flag=false;
             }
+        }
+        if(flag)
+        {
+            af.push_back(x[i]);
         }
     }
     return rt;
@@ -130,8 +147,21 @@ void CppDoc::gendoc(std::string path,i18n lang)
     {
         return;
     }
+    bool skip=false;
     while(std::getline(f,x[i]))
     {
+        if(skipon(x[i]))
+        {
+            skip=true;
+        }
+        if(skipoff(x[i]))
+        {
+            skip=false;
+        }
+        if(skip)
+        {
+            continue;
+        }
         if(isclass(x[i]))
         {
             doc << lang.of("nosignal.cppdoc.class") << getclass(x[i]) << std::endl;
@@ -149,9 +179,9 @@ void CppDoc::gendoc(std::string path,i18n lang)
                     doc << std::endl;
                     doc << lang.of("nosignal.cppdoc.desc") << desc <<std::endl;
                     doc << std::endl;
-                    for(int j=2;j<nm.size();j+=2)
+                    for(int j=1;j<nm.size();j++)
                     {
-                        doc << lang.of("nosignal.cppdoc.para") << nm[j] << lang.of("nosignal.cppdoc.colon") << getbetween_auto(x[0],"#" + std::to_string(j/2)," ") << std::endl;
+                        doc << lang.of("nosignal.cppdoc.para") << nm[j] << lang.of("nosignal.cppdoc.colon") << getbetween_auto(x[0],"#" + std::to_string(j)," ") << std::endl;
                         doc << std::endl;
                     }
                 }
@@ -162,5 +192,16 @@ void CppDoc::gendoc(std::string path,i18n lang)
             continue;
         }
         i++;
+    }
+}
+
+void CppDoc::gendoc_all(std::string path,i18n lang)
+{
+    std::vector<std::string> all;
+    all.clear();
+    FileManager().getallfile(path,all);
+    for(int i=0;i<all.size();i++)
+    {
+        gendoc(all[i],lang);
     }
 }

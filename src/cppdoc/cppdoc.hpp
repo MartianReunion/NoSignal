@@ -11,6 +11,8 @@ class CppDoc
     public:
     inline void gendoc_auto(std::string path) {gendoc(path, i18n("en_us"));}
     void gendoc(std::string path,i18n lang);
+    void gendoc_all(std::string path,i18n lang);
+    inline void gendoc_all_auto(std::string path) {gendoc_all(path, i18n("en_us"));}
     bool iscomment(std::string x);
     // bool isfunc(std::string x);
     bool isclass(std::string x);
@@ -20,6 +22,8 @@ class CppDoc
     std::string substring(std::string x,int l,int r);
     std::string getbetween_auto(std::string x,std::string l,std::string r);
     std::string getclass(std::string x);
+    bool skipon(std::string x);
+    bool skipoff(std::string x);
 };
 
 const std::string DOCSUFFIX = ".md";
