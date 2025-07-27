@@ -3,14 +3,12 @@
 #include <filesystem>
 #include <algorithm>
 #include <fstream>
-#include <codecvt>
 #include <vector>
 const std::string GAMEDIRROOT = "./";
 const std::ios::openmode BINARY = std::ios::in | std::ios::out | std::ios::binary;
 const std::ios::openmode NORMAL = std::ios::in | std::ios::out;
 const std::ios::openmode NORMALTRUNC = std::ios::in | std::ios::out | std::ios::trunc;
 const std::ios::openmode BINARYTRUNC = std::ios::in | std::ios::out | std::ios::binary | std::ios::trunc;
-const std::locale utf8( std::locale(), new std::codecvt_utf8<wchar_t> );
 std::string to_upper(std::string x);
 std::string to_lower(std::string x);
 class FileManager
