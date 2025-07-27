@@ -8,7 +8,7 @@ class i18n
 {
     public:
     inline i18n(std::string lang) {language = lang;load();};
-    // 获取翻译键值
+    //$这是一个用来XXXX的函数 #1一号参数描述 #2二号参数描述
     std::string of(std::string key);
     // 数据生成：可以用代码生成翻译键值
     void add(std::string key, std::string val);

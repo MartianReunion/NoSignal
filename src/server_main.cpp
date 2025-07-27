@@ -2,6 +2,7 @@
 #include "filemanager/filemanager.hpp"
 #include "i18n/i18n.hpp"
 #include "uuid/uuid.hpp"
+#include "cppdoc/cppdoc.hpp"
 int main()
 {
     std::cout << "Hello World!" << std::endl;
@@ -23,5 +24,8 @@ int main()
     std::cout << std::endl;
 
     std::cout << i18n("en_us").of("hello") << std::endl;
+
+    CppDoc().gendoc_auto("cpp:/test.cpp");
+
     return 0; 
 }

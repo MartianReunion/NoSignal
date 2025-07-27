@@ -47,5 +47,10 @@ void TranslationDataGen::gen()
 {
     i18n EN_US("en_us");
     EN_US.add("nosignal.hello","hello");
+    EN_US.add("nosignal.cppdoc.func", "## Function ");
+    EN_US.add("nosignal.cppdoc.desc", "**Description:** ");
+    EN_US.add("nosignal.cppdoc.para", "**Parameter** ");
+    EN_US.add("nosignal.cppdoc.colon", " : ");
+    EN_US.add("nosignal.cppdoc.class", "# Class ");
     EN_US.save();
 }
