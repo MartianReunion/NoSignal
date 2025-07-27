@@ -2,7 +2,6 @@
 #include "filemanager/filemanager.hpp"
 #include <fstream>
 #include "nlohmann/json.hpp"
-#include "i18n/utiles.hpp"
 using json = nlohmann::json;
 std::string i18n::of(std::string key)
 {
@@ -44,18 +43,18 @@ void i18n::save()
     }
 }
 
-void i18n::saveutf8()
-{
-    FileManager fm = FileManager();
-    std::wfstream f;
-    if(fm.getfile_auto_utf8(I18NPATH + language + FILESUFFIX, f, NORMALTRUNC))
-    {
-        json j(tr);
-        std::wstring dp = String2Wstring(j.dump());
-        f << dp;
-        f.close();
-    }
-}
+// void i18n::saveutf8()
+// {
+//     FileManager fm = FileManager();
+//     std::wfstream f;
+//     if(fm.getfile_auto_utf8(I18NPATH + language + FILESUFFIX, f, NORMALTRUNC))
+//     {
+//         json j(tr);
+//         std::wstring dp = String2Wstring(j.dump());
+//         f << dp;
+//         f.close();
+//     }
+// }
 
 void TranslationDataGen::gen()
 {
