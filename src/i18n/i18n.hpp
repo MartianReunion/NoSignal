@@ -16,6 +16,8 @@ class i18n
     void save();
     // 获取翻译键值
     void load();
+    // 保存生成的数据（使用UTF-8编码）
+    void saveutf8();
     inline std::string getlang() {return language;};
     private:
     std::map<std::string, std::string> tr;

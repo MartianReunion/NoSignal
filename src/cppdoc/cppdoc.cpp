@@ -63,10 +63,10 @@ std::string CppDoc::getbetween_auto(std::string x,std::string l,std::string r)
     }
     if(rr==x.npos)
     {
-        std::cout << substring(x,ll+l.length(),x.length()) << std::endl;
+        // std::cout << substring(x,ll+l.length(),x.length()) << std::endl;
         return substring(x,ll+l.length(),x.length());
     }
-    std::cout << substring(x,ll+l.length(),rr) << std::endl;
+    // std::cout << substring(x,ll+l.length(),rr) << std::endl;
     return substring(x,ll+l.length(),rr);
 }
 
@@ -175,13 +175,13 @@ void CppDoc::gendoc(std::string path,i18n lang)
                 if(nm.size()>=1)
                 {
                     std::string desc = getbetween_auto(x[0],"$"," ");
-                    doc << lang.of("nosignal.cppdoc.func") << nm[0] << std::endl;
+                    doc << lang.of("nosignal.cppdoc.func") << MarkdownFormat().code(nm[0] + "()") << std::endl;
                     doc << std::endl;
                     doc << lang.of("nosignal.cppdoc.desc") << desc <<std::endl;
                     doc << std::endl;
                     for(int j=1;j<nm.size();j++)
                     {
-                        doc << lang.of("nosignal.cppdoc.para") << nm[j] << lang.of("nosignal.cppdoc.colon") << getbetween_auto(x[0],"#" + std::to_string(j)," ") << std::endl;
+                        doc << lang.of("nosignal.cppdoc.para") << MarkdownFormat().code(nm[j]) << lang.of("nosignal.cppdoc.colon") << getbetween_auto(x[0],"#" + std::to_string(j)," ") << std::endl;
                         doc << std::endl;
                     }
                 }
@@ -204,4 +204,32 @@ void CppDoc::gendoc_all(std::string path,i18n lang)
     {
         gendoc(all[i],lang);
     }
+}
+
+std::string MarkdownFormat::title(std::string x,int y)
+{
+    if(y>=1&&y<=6)
+    {
+        return TITLE_LEVELS[y] + x;
+    }
+    return x;
+}
+std::string MarkdownFormat::quote(std::string x)
+{
+    return QUOTE + x;
+}
+
+std::string MarkdownFormat::bold(std::string x)
+{
+    return BOLD + x + BOLD;
+}
+
+std::string MarkdownFormat::code(std::string x)
+{
+    return CODE + x + CODE;
+}
+
+std::string MarkdownFormat::deleteline(std::string x)
+{
+    return DELETELINE + x + DELETELINE;
 }

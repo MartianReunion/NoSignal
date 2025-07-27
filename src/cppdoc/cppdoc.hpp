@@ -28,3 +28,18 @@ class CppDoc
 
 const std::string DOCSUFFIX = ".md";
 const std::string CLASS = "class ";
+const std::string TITLE_LEVELS[7] = {"","# ","## ","### ","#### ","##### ","###### "};
+const std::string QUOTE = ">";
+const std::string BOLD = "**";
+const std::string CODE = "`";
+const std::string DELETELINE = "~~";
+
+class MarkdownFormat
+{
+    public:
+    std::string title(std::string x, int y);
+    std::string bold(std::string x);
+    std::string deleteline(std::string x);
+    std::string code(std::string x);
+    std::string quote(std::string x);
+};
