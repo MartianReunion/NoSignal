@@ -174,14 +174,14 @@ void CppDoc::gendoc(std::string path,i18n lang)
                 std::vector<std::string> nm = getnames(x[1]);
                 if(nm.size()>=1)
                 {
-                    std::string desc = getbetween_auto(x[0],"$"," ");
+                    std::string desc = getbetween_auto(x[0],"$","*");
                     doc << lang.of("nosignal.cppdoc.func") << MarkdownFormat().code(nm[0] + "()") << std::endl;
                     doc << std::endl;
                     doc << lang.of("nosignal.cppdoc.desc") << desc <<std::endl;
                     doc << std::endl;
                     for(int j=1;j<nm.size();j++)
                     {
-                        doc << lang.of("nosignal.cppdoc.para") << MarkdownFormat().code(nm[j]) << lang.of("nosignal.cppdoc.colon") << getbetween_auto(x[0],"#" + std::to_string(j)," ") << std::endl;
+                        doc << lang.of("nosignal.cppdoc.para") << MarkdownFormat().code(nm[j]) << lang.of("nosignal.cppdoc.colon") << getbetween_auto(x[0],"#" + std::to_string(j),"*") << std::endl;
                         doc << std::endl;
                     }
                 }
