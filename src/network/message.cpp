@@ -76,7 +76,8 @@ std::vector<std::byte> Message::serialize(UUID &remote) const
             auto remoteUuid = remote.getData();
             auto i = packet.begin();
             i+=METADATA_SIZE;
-            auto payloadSize = uint64_to_be_bytes(::Network::serialize(msg,i));
+            auto payloadSize = ::Network::serialize(msg,i);
+            auto payloadSize_b = uint64_to_be_bytes(::Network::serialize(msg,i));
             i = packet.begin();
             std::copy(magic.begin(), magic.end(), i);
             i += MAGIC_NUMBER_SIZE;
@@ -84,9 +85,9 @@ std::vector<std::byte> Message::serialize(UUID &remote) const
             i += REMOTE_UUID_SIZE;
             std::copy(messageId.begin(), messageId.end(), i);
             i += MESSAGE_ID_SIZE;
-            std::copy(payloadSize.begin(), payloadSize.end(), i);
+            std::copy(payloadSize_b.begin(), payloadSize_b.end(), i);
             i += MESSAGE_SIZE_SIZE;
-            return packet; },
+            return std::vector<std::byte>(packet.begin(), packet.begin()+METADATA_SIZE+payloadSize); },
                       m_data);
 }
 //
