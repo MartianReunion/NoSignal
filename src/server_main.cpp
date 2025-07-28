@@ -26,7 +26,11 @@ int main()
     std::cout << i18n("en_us").of("nosignal.hello") << std::endl;
     // std::cout << i18n("zh_cn").of("nosignal.hello") << std::endl;
 
-    CppDoc().gendoc_all("cpp:/cppdoc",i18n("fr_fr"));
+    CppDoc().gendoc_all("cpp:/cppdoc",i18n("en_us"));
 
+    auto func = FileManager::print;
+    auto func2 = FileManager::print_byhand;
+    FileManager().getallfile_todo(GAMEDIRROOT, func);
+    FileManager().getallfile_todo_byhand(GAMEDIRROOT, func2);
     return 0; 
 }

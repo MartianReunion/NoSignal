@@ -1,90 +1,34 @@
-# Classe CppDoc
+# Class FileManager
 
-## Fonction `gendoc_auto()`
+## Function `isconverted()`
 
-**Description:** 自动生成文档，无需选择语言
+**Description:** 判断路径是否是转换后的
 
-**Paramètre** `path` : 文件路径
+**Parameter** `path` : 路径
 
-## Fonction `gendoc()`
+## Function `convertpath()`
 
-**Description:** 生成文档，手动选择语言
+**Description:** 转换路径格式，转换失败返回GAMEDIRROOT，注意如果你把已经转换的输进去也会转换失败
 
-**Paramètre** `path` : 文件路径
+**Parameter** `x` : 待转换的路径
 
-**Paramètre** `lang` : 语言
+## Function `getallfile()`
 
-## Fonction `gendoc_all()`
+**Description:** 获取一个目录下的所有文件并把路径装进vector里
 
-**Description:** 生成一个目录下的所有文件的文档，甚至是递归遍历
+**Parameter** `path` : 目录
 
-**Paramètre** `path` : 目录
+**Parameter** `&x` : vector
 
-**Paramètre** `lang` : 语言
+## Function `getallfile_todo()`
 
-## Fonction `gendoc_all_auto()`
+**Description:** 对一个目录下的包括子目录的所有文件的目录进行操作
 
-**Description:** 自动生成一个目录下的所有文件的文档，甚至是递归遍历，而且无需选择语言
+**Parameter** `path` : 目录（可以为未转换的）
 
-**Paramètre** `path` : 目录
+## Function `getallfile_todo_byhand()`
 
-## Fonction `iscomment()`
+**Description:** 对一个目录下的包括子目录的所有文件的目录进行操作，由func决定是否向下遍历，true=向下
 
-**Description:** 判断一行代码是不是注释
-
-**Paramètre** `x` : 代码
-
-## Fonction `isclass()`
-
-**Description:** 判断一行代码是不是类的声明
-
-**Paramètre** `x` : 代码
-
-## Fonction `getnames()`
-
-**Description:** 获取一行代码中函数的名字，参数的变量类型，以及参数名字
-
-**Paramètre** `x` : 代码
-
-## Fonction `isgood()`
-
-**Description:** 判断字符ch是不是0~9或A~Z或a~z
-
-**Paramètre** `ch` : 字符
-
-## Fonction `getbetween()`
-
-**Description:** 获取一个字符串中l字符串到r字符串之间的部分，不包含l和r
-
-**Paramètre** `x` : 字符串
-
-**Paramètre** `l` : 字符串
-
-**Paramètre** `r` : 字符串
-
-## Fonction `substring()`
-
-**Description:** 获取字符串中l下标到r下标之间的部分，包含l但不包含r
-
-**Paramètre** `x` : 字符串
-
-**Paramètre** `l` : 下标
-
-**Paramètre** `r` : 下标
-
-## Fonction `getbetween_auto()`
-
-**Description:** 自动获取字符串中l字符串到r字符串之间的部分，包含l但不包含r，如果r找不到，默认为字符串尾部
-
-**Paramètre** `x` : 字符串
-
-**Paramètre** `l` : 字符串
-
-**Paramètre** `r` : 字符串
-
-## Fonction `getclass()`
-
-**Description:** 获取一行代码中的类的声明
-
-**Paramètre** `x` : 代码
+**Parameter** `path` : 目录（可以为未转换的）
 

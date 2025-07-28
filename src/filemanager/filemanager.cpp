@@ -124,3 +124,32 @@ void FileManager::getallfile(std::string path,std::vector<std::string> &x)
         }
     }
 }
+
+void FileManager::getallfile_todo(std::string path,std::function<void(std::string)> func)
+{
+    std::string cpath = isconverted(path) ? path : convertpath(path);
+    func(cpath);
+    if(!fs::is_directory(cpath))
+    {
+        return;
+    }
+    for(auto& i : fs::directory_iterator(cpath))
+    {
+        fs::path pt = i.path();
+        getallfile_todo(pt.string(),func);
+    }
+}
+
+void FileManager::getallfile_todo_byhand(std::string path,std::function<bool(std::string)> func)
+{
+    std::string cpath = isconverted(path) ? path : convertpath(path);
+    if(!func(cpath))
+    {
+        return;
+    }
+    for(auto& i : fs::directory_iterator(cpath))
+    {
+        fs::path pt = i.path();
+        getallfile_todo(pt.string(),func);
+    }
+}
